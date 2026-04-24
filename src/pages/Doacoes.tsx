@@ -1,7 +1,30 @@
 import { Link } from 'react-router-dom';
 import { Heart, CreditCard, ShieldCheck } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { db } from '../lib/firebase';
+import { doc, getDoc } from 'firebase/firestore';
 
 export default function Doacoes() {
+  const [pixKey, setPixKey] = useState('27.342.722/0001-80');
+  const [paypalLink, setPaypalLink] = useState('paypal.me/caminhosuave');
+
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const docRef = doc(db, 'settings', 'donations');
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          if (data.pixKey) setPixKey(data.pixKey);
+          if (data.paypalLink) setPaypalLink(data.paypalLink);
+        }
+      } catch (err) {
+        console.error("Erro ao buscar configurações de doação:", err);
+      }
+    };
+    fetchSettings();
+  }, []);
+
   return (
     <div className="bg-gray-soft min-h-screen py-20 flex flex-col items-center">
       <div className="max-w-4xl w-full mx-auto px-4 sm:px-6 lg:px-8">
@@ -77,14 +100,14 @@ export default function Doacoes() {
                 <span className="text-[#32BCAD] font-bold text-xs uppercase">PIX</span>
               </div>
               <span className="text-xs text-gray-500 uppercase tracking-wider mb-1">Doação Imediata</span>
-              <strong className="font-mono text-sm text-neutral-dark">27.342.722/0001-80</strong>
+              <strong className="font-mono text-sm text-neutral-dark text-center break-all">{pixKey}</strong>
             </div>
             <div className="flex flex-col items-center justify-center p-4 bg-gray-50 rounded-xl">
               <div className="w-12 h-12 bg-[#003087]/10 rounded-full flex items-center justify-center mb-3">
                 <span className="text-[#003087] font-bold text-xs">PayPal</span>
               </div>
               <span className="text-xs text-gray-500 uppercase tracking-wider mb-1">Cartão de Crédito</span>
-              <a href="#" className="text-sm font-semibold text-primary hover:underline">paypal.me/caminhosuave</a>
+              <a href={paypalLink.startsWith('http') ? paypalLink : `https://${paypalLink}`} target="_blank" rel="noopener noreferrer" className="text-sm font-semibold text-primary hover:underline text-center break-all">{paypalLink.replace(/^https?:\/\//, '')}</a>
             </div>
             <div className="flex flex-col items-center justify-center p-4 bg-gray-50 rounded-xl">
               <div className="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center mb-3">

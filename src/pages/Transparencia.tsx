@@ -1,6 +1,39 @@
 import { Download, FileText, PieChart, ShieldCheck } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { db } from '../lib/firebase';
+import { collection, query, getDocs, orderBy } from 'firebase/firestore';
+
+interface ReportItem {
+  id: string;
+  title: string;
+  url: string;
+  period?: string;
+}
 
 export default function Transparencia() {
+  const [reports, setReports] = useState<ReportItem[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchReports = async () => {
+      try {
+        const q = query(collection(db, 'reports'), orderBy('createdAt', 'desc'));
+        const querySnapshot = await getDocs(q);
+        const list: ReportItem[] = [];
+        querySnapshot.forEach((doc) => {
+          list.push({ id: doc.id, ...doc.data() } as ReportItem);
+        });
+        setReports(list);
+      } catch (err) {
+        console.error("Erro ao carregar os relatórios:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchReports();
+  }, []);
+
   return (
     <div className="bg-gray-soft min-h-screen py-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -105,53 +138,31 @@ export default function Transparencia() {
 
         {/* Documentos para Download */}
         <div className="bg-white rounded-3xl shadow-md border border-gray-100 p-8 md:p-12 mb-12">
-          <h2 className="text-2xl md:text-3xl font-display font-bold text-primary mb-2 text-center">Acesso à Documentação Púbica</h2>
+          <h2 className="text-2xl md:text-3xl font-display font-bold text-primary mb-2 text-center">Acesso à Documentação Pública</h2>
           <p className="text-center text-neutral-dark mb-10">Todos os nossos documentos estão disponíveis para download. Você pode verificar tudo.</p>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <a href="#" className="flex items-center justify-between p-4 bg-gray-soft rounded-xl hover:bg-gray-200 transition-colors group">
-              <div className="flex items-center gap-3">
-                <FileText className="w-5 h-5 text-secondary group-hover:text-primary transition-colors" />
-                <span className="font-semibold text-sm text-neutral-dark">Prestação de Contas Mensal</span>
-              </div>
-              <Download className="w-4 h-4 text-gray-400 group-hover:text-primary transition-colors" />
-            </a>
-            <a href="#" className="flex items-center justify-between p-4 bg-gray-soft rounded-xl hover:bg-gray-200 transition-colors group">
-              <div className="flex items-center gap-3">
-                <FileText className="w-5 h-5 text-secondary group-hover:text-primary transition-colors" />
-                <span className="font-semibold text-sm text-neutral-dark">Relatório Anual 2025</span>
-              </div>
-              <Download className="w-4 h-4 text-gray-400 group-hover:text-primary transition-colors" />
-            </a>
-            <a href="#" className="flex items-center justify-between p-4 bg-gray-soft rounded-xl hover:bg-gray-200 transition-colors group">
-              <div className="flex items-center gap-3">
-                <FileText className="w-5 h-5 text-secondary group-hover:text-primary transition-colors" />
-                <span className="font-semibold text-sm text-neutral-dark">Estatuto Registrado</span>
-              </div>
-              <Download className="w-4 h-4 text-gray-400 group-hover:text-primary transition-colors" />
-            </a>
-            <a href="#" className="flex items-center justify-between p-4 bg-gray-soft rounded-xl hover:bg-gray-200 transition-colors group">
-              <div className="flex items-center gap-3">
-                <FileText className="w-5 h-5 text-secondary group-hover:text-primary transition-colors" />
-                <span className="font-semibold text-sm text-neutral-dark">Certificação OSCIP</span>
-              </div>
-              <Download className="w-4 h-4 text-gray-400 group-hover:text-primary transition-colors" />
-            </a>
-            <a href="#" className="flex items-center justify-between p-4 bg-gray-soft rounded-xl hover:bg-gray-200 transition-colors group">
-              <div className="flex items-center gap-3">
-                <FileText className="w-5 h-5 text-secondary group-hover:text-primary transition-colors" />
-                <span className="font-semibold text-sm text-neutral-dark">Auditoria Externa 2025</span>
-              </div>
-              <Download className="w-4 h-4 text-gray-400 group-hover:text-primary transition-colors" />
-            </a>
-            <a href="#" className="flex items-center justify-between p-4 bg-gray-soft rounded-xl hover:bg-gray-200 transition-colors group">
-              <div className="flex items-center gap-3">
-                <FileText className="w-5 h-5 text-secondary group-hover:text-primary transition-colors" />
-                <span className="font-semibold text-sm text-neutral-dark">Distribuição de Gastos</span>
-              </div>
-              <Download className="w-4 h-4 text-gray-400 group-hover:text-primary transition-colors" />
-            </a>
-          </div>
+          {loading ? (
+             <div className="text-center py-8 text-gray-500">Carregando documentos...</div>
+          ) : reports.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {reports.map((report) => (
+                <a key={report.id} href={report.url} target="_blank" rel="noopener noreferrer" className="flex items-center justify-between p-4 bg-gray-soft rounded-xl hover:bg-gray-200 transition-colors group">
+                  <div className="flex flex-col gap-1 w-full mr-4">
+                    <div className="flex items-center gap-3">
+                      <FileText className="w-5 h-5 text-secondary group-hover:text-primary transition-colors shrink-0" />
+                      <span className="font-semibold text-sm text-neutral-dark line-clamp-2">{report.title}</span>
+                    </div>
+                    {report.period && <span className="text-xs text-gray-500 ml-8 font-medium">Período: {report.period}</span>}
+                  </div>
+                  <Download className="w-4 h-4 text-gray-400 group-hover:text-primary transition-colors shrink-0" />
+                </a>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-8 text-gray-500">
+              Nenhum documento disponível no momento.
+            </div>
+          )}
         </div>
 
         <div className="text-center text-sm font-semibold text-gray-500">

@@ -11,6 +11,9 @@ import Contato from './pages/Contato';
 import AdminLogin from './pages/admin/Login';
 import AdminDashboard from './pages/admin/Dashboard';
 import AdminEquipe from './pages/admin/Equipe';
+import AdminNoticias from './pages/admin/Noticias';
+import AdminRelatorios from './pages/admin/Relatorios';
+import AdminDoacoes from './pages/admin/Doacoes';
 import { AuthProvider, useAuth } from './context/AuthContext';
 
 // Protected Route wrapper for Admin area
@@ -36,6 +39,9 @@ export default function App() {
                 <Routes>
                   <Route path="dashboard" element={<AdminDashboard />} />
                   <Route path="equipe" element={<AdminEquipe />} />
+                  <Route path="noticias" element={<AdminNoticias />} />
+                  <Route path="relatorios" element={<AdminRelatorios />} />
+                  <Route path="doacoes" element={<AdminDoacoes />} />
                 </Routes>
               </AdminRoute>
             } />

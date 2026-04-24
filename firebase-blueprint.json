@@ -20,6 +20,91 @@
         }
       },
       "required": ["email", "role", "createdAt"]
+    },
+    "News": {
+      "title": "News",
+      "description": "News articles published by the organization.",
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "description": "The title of the news article"
+        },
+        "content": {
+          "type": "string",
+          "description": "The content of the news article in markdown or plain text"
+        },
+        "imageUrl": {
+          "type": "string",
+          "description": "URL of the primary image"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["draft", "published"],
+          "description": "Current status of the news article"
+        },
+        "authorEmail": {
+          "type": "string",
+          "description": "Email of the admin who created the news"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp of creation"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Timestamp of last update"
+        }
+      },
+      "required": ["title", "content", "status", "authorEmail", "createdAt", "updatedAt"]
+    },
+    "Report": {
+      "title": "Report",
+      "description": "A transparency report linked to an external file (e.g., Google Drive)",
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "description": "The title of the report"
+        },
+        "url": {
+          "type": "string",
+          "description": "The Google Drive link or other external URL for the PDF"
+        },
+        "period": {
+          "type": "string",
+          "description": "The period this report covers (e.g., 'January 2025' or 'Q1 2024')"
+        },
+        "authorEmail": {
+          "type": "string",
+          "description": "Email of the admin who created the report entry"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp of creation"
+        }
+      },
+      "required": ["title", "url", "authorEmail", "createdAt"]
+    },
+    "DonationSettings": {
+      "title": "DonationSettings",
+      "description": "Settings for the donations page",
+      "type": "object",
+      "properties": {
+        "pixKey": {
+          "type": "string",
+          "description": "PIX key for donations"
+        },
+        "paypalLink": {
+          "type": "string",
+          "description": "PayPal link for donations"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Timestamp of last update"
+        }
+      },
+      "required": ["pixKey", "paypalLink", "updatedAt"]
     }
   },
   "firestore": {
@@ -28,6 +113,24 @@
         "$ref": "#/entities/Admin"
       },
       "description": "Contains documents for authorized administrators. The document ID must match the user's email address to allow for pre-registration."
+    },
+    "/news/{newsId}": {
+      "schema": {
+        "$ref": "#/entities/News"
+      },
+      "description": "News articles to be displayed on the public site."
+    },
+    "/reports/{reportId}": {
+      "schema": {
+        "$ref": "#/entities/Report"
+      },
+      "description": "Public transparency reports (e.g. PDF links on Google Drive)."
+    },
+    "/settings/{settingId}": {
+      "schema": {
+        "$ref": "#/entities/DonationSettings"
+      },
+      "description": "Settings documents. The document ID 'donations' will hold the DonationSettings."
     }
   }
 }

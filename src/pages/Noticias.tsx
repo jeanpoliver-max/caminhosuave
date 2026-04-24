@@ -1,6 +1,45 @@
-import { Calendar, User } from 'lucide-react';
+import { Calendar, User, FileText } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { db } from '../lib/firebase';
+import { collection, query, where, getDocs, orderBy } from 'firebase/firestore';
+
+interface NewsItem {
+  id: string;
+  title: string;
+  content: string;
+  imageUrl?: string;
+  authorEmail: string;
+  createdAt: any;
+}
 
 export default function Noticias() {
+  const [news, setNews] = useState<NewsItem[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchNews = async () => {
+      try {
+        const q = query(
+          collection(db, 'news'),
+          where('status', '==', 'published'),
+          orderBy('createdAt', 'desc')
+        );
+        const querySnapshot = await getDocs(q);
+        const newsList: NewsItem[] = [];
+        querySnapshot.forEach((doc) => {
+          newsList.push({ id: doc.id, ...doc.data() } as NewsItem);
+        });
+        setNews(newsList);
+      } catch (error) {
+        console.error("Error fetching news:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchNews();
+  }, []);
+
   return (
     <div className="bg-gray-soft min-h-screen py-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -9,58 +48,46 @@ export default function Noticias() {
           <p className="text-lg text-neutral-dark max-w-2xl mx-auto">Fique por dentro das últimas notícias, resgates e histórias de transformação. Cada semana temos novidades para compartilhar!</p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {/* Post Exemplo */}
-          <article className="bg-white rounded-3xl shadow-md border border-gray-100 overflow-hidden hover:shadow-lg transition-shadow group flex flex-col">
-            <div className="relative h-48 overflow-hidden bg-gray-200">
-              <img src="https://images.unsplash.com/photo-1543466835-00a7907e9de1?q=80&w=600&auto=format&fit=crop" alt="Resgate" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-              <div className="absolute top-4 left-4 bg-primary text-white text-xs font-bold uppercase py-1 px-3 rounded-full">Resgate</div>
-            </div>
-            <div className="p-6 flex flex-col flex-grow">
-              <h2 className="text-xl font-display font-bold text-primary mb-3">Luna Encontra Seu Lar Definitivo Após 60 Dias de Recuperação</h2>
-              <div className="flex items-center gap-4 text-xs text-gray-500 uppercase tracking-wider font-semibold mb-4">
-                <span className="flex items-center gap-1"><Calendar className="w-3 h-3" /> 15 de Abril de 2025</span>
-                <span className="flex items-center gap-1"><User className="w-3 h-3" /> Equipe Caminho Suave</span>
-              </div>
-              <p className="text-neutral-dark text-sm mb-6 flex-grow">Depois de quase perder a perna e passar por semanas de fisioterapia intensiva, nossa guerreira Luna finalmente foi adotada por uma família maravilhosa...</p>
-              <a href="#" className="font-bold text-secondary hover:text-primary transition-colors text-sm uppercase tracking-wider inline-flex items-center gap-1">Ler História Completa &rarr;</a>
-            </div>
-          </article>
-
-          {/* Post Exemplo 2 */}
-          <article className="bg-white rounded-3xl shadow-md border border-gray-100 overflow-hidden hover:shadow-lg transition-shadow group flex flex-col">
-            <div className="relative h-48 overflow-hidden bg-gray-200">
-              <img src="https://images.unsplash.com/photo-1583337130417-3346a1be7dee?q=80&w=600&auto=format&fit=crop" alt="Campanha" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-              <div className="absolute top-4 left-4 bg-accent text-white text-xs font-bold uppercase py-1 px-3 rounded-full">Campanha</div>
-            </div>
-            <div className="p-6 flex flex-col flex-grow">
-              <h2 className="text-xl font-display font-bold text-primary mb-3">Campanha do Agasalho Pet arrecada mais de 200 cobertores</h2>
-              <div className="flex items-center gap-4 text-xs text-gray-500 uppercase tracking-wider font-semibold mb-4">
-                <span className="flex items-center gap-1"><Calendar className="w-3 h-3" /> 02 de Abril de 2025</span>
-                <span className="flex items-center gap-1"><User className="w-3 h-3" /> Voluntários</span>
-              </div>
-              <p className="text-neutral-dark text-sm mb-6 flex-grow">Com a chegada do frio, nossa comunidade se uniu para garantir que nenhum animal do abrigo passe as noites sem o conforto e calor de um cobertor...</p>
-              <a href="#" className="font-bold text-secondary hover:text-primary transition-colors text-sm uppercase tracking-wider inline-flex items-center gap-1">Ler História Completa &rarr;</a>
-            </div>
-          </article>
-          
-          {/* Post Exemplo 3 */}
-          <article className="bg-white rounded-3xl shadow-md border border-gray-100 overflow-hidden hover:shadow-lg transition-shadow group flex flex-col">
-            <div className="relative h-48 overflow-hidden bg-gray-200">
-              <img src="https://images.unsplash.com/photo-1524511751214-b0a384dd9afe?q=80&w=600&auto=format&fit=crop" alt="Adoção" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-              <div className="absolute top-4 left-4 bg-secondary text-white text-xs font-bold uppercase py-1 px-3 rounded-full">Adoção</div>
-            </div>
-            <div className="p-6 flex flex-col flex-grow">
-              <h2 className="text-xl font-display font-bold text-primary mb-3">Feira de Adoção no Centro bate recorde com 15 animais adotados</h2>
-              <div className="flex items-center gap-4 text-xs text-gray-500 uppercase tracking-wider font-semibold mb-4">
-                <span className="flex items-center gap-1"><Calendar className="w-3 h-3" /> 28 de Março de 2025</span>
-                <span className="flex items-center gap-1"><User className="w-3 h-3" /> Eventos</span>
-              </div>
-              <p className="text-neutral-dark text-sm mb-6 flex-grow">Um fim de semana de muita alegria e lágrimas de emoção. Quase metade dos animais disponíveis encontraram suas famílias definitivas no último sábado...</p>
-              <a href="#" className="font-bold text-secondary hover:text-primary transition-colors text-sm uppercase tracking-wider inline-flex items-center gap-1">Ler História Completa &rarr;</a>
-            </div>
-          </article>
-        </div>
+        {loading ? (
+          <div className="text-center text-gray-500 py-12">Carregando notícias...</div>
+        ) : news.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {news.map((item) => (
+              <article key={item.id} className="bg-white rounded-3xl shadow-md border border-gray-100 overflow-hidden hover:shadow-lg transition-shadow group flex flex-col">
+                {item.imageUrl ? (
+                  <div className="relative h-48 overflow-hidden bg-gray-200 shrink-0">
+                    <img src={item.imageUrl} alt={item.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                    <div className="absolute top-4 left-4 bg-primary text-white text-xs font-bold uppercase py-1 px-3 rounded-full">Notícia</div>
+                  </div>
+                ) : (
+                  <div className="relative h-48 overflow-hidden bg-gray-100 shrink-0 flex items-center justify-center">
+                    <FileText className="w-12 h-12 text-gray-300" />
+                    <div className="absolute top-4 left-4 bg-primary text-white text-xs font-bold uppercase py-1 px-3 rounded-full">Notícia</div>
+                  </div>
+                )}
+                <div className="p-6 flex flex-col flex-grow">
+                  <h2 className="text-xl font-display font-bold text-primary mb-3">{item.title}</h2>
+                  <div className="flex items-center gap-4 text-xs text-gray-500 uppercase tracking-wider font-semibold mb-4">
+                    <span className="flex items-center gap-1">
+                      <Calendar className="w-3 h-3" /> 
+                      {item.createdAt?.seconds ? new Date(item.createdAt.seconds * 1000).toLocaleDateString() : 'Recente'}
+                    </span>
+                    <span className="flex items-center gap-1 truncate" title={item.authorEmail}>
+                      <User className="w-3 h-3 shrink-0" /> {item.authorEmail.split('@')[0]}
+                    </span>
+                  </div>
+                  <p className="text-neutral-dark text-sm mb-6 flex-grow whitespace-pre-line line-clamp-4">{item.content}</p>
+                </div>
+              </article>
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-16 bg-white rounded-3xl border border-gray-100 shadow-sm">
+            <FileText className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+            <h3 className="text-xl font-bold text-primary mb-2">Nenhuma notícia publicada</h3>
+            <p className="text-gray-500">Volte em breve para conferir as novidades da associação.</p>
+          </div>
+        )}
       </div>
     </div>
   );

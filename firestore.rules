@@ -32,5 +32,89 @@ service cloud.firestore {
       allow update: if false;
       allow delete: if isAdmin() && isValidEmailId(adminEmail) && adminEmail != "jeanp.oliver@gmail.com";
     }
+
+    function isValidNews(data) {
+      return data.keys().hasAll(['title', 'content', 'status', 'authorEmail', 'createdAt', 'updatedAt']) &&
+        (data.keys().size() == 6 || (data.keys().size() == 7 && data.keys().hasAll(['imageUrl']))) &&
+        data.title is string && data.title.size() <= 200 &&
+        data.content is string && data.content.size() <= 20000 &&
+        (data.get('imageUrl', '') == '' || (data.imageUrl is string && data.imageUrl.size() <= 1000)) &&
+        (data.status == 'draft' || data.status == 'published') &&
+        data.authorEmail is string && data.authorEmail.size() <= 100 &&
+        data.createdAt is timestamp &&
+        data.updatedAt is timestamp;
+    }
+
+    match /news/{newsId} {
+      allow get: if (existing().status == 'published') || isAdmin();
+      allow list: if (existing().status == 'published') || isAdmin();
+      
+      allow create: if isAdmin() && isValidId(newsId) && 
+        isValidNews(incoming()) &&
+        incoming().authorEmail == request.auth.token.email &&
+        incoming().createdAt == request.time &&
+        incoming().updatedAt == request.time;
+        
+      allow update: if isAdmin() && isValidId(newsId) &&
+        isValidNews(incoming()) &&
+        incoming().authorEmail == existing().authorEmail &&
+        incoming().createdAt == existing().createdAt &&
+        incoming().updatedAt == request.time &&
+        (incoming().diff(existing()).affectedKeys().hasOnly(['title', 'content', 'imageUrl', 'status', 'updatedAt']));
+
+      allow delete: if isAdmin() && isValidId(newsId);
+    }
+
+    function isValidReport(data) {
+      return data.keys().hasAll(['title', 'url', 'authorEmail', 'createdAt']) &&
+        (data.keys().size() == 4 || (data.keys().size() == 5 && data.keys().hasAll(['period']))) &&
+        data.title is string && data.title.size() <= 200 &&
+        data.url is string && data.url.size() <= 1000 &&
+        (data.get('period', '') == '' || (data.period is string && data.period.size() <= 100)) &&
+        data.authorEmail is string && data.authorEmail.size() <= 100 &&
+        data.createdAt is timestamp;
+    }
+
+    match /reports/{reportId} {
+      allow get: if true;
+      allow list: if true;
+      
+      allow create: if isAdmin() && isValidId(reportId) &&
+        isValidReport(incoming()) &&
+        incoming().authorEmail == request.auth.token.email &&
+        incoming().createdAt == request.time;
+        
+      allow update: if isAdmin() && isValidId(reportId) &&
+        isValidReport(incoming()) &&
+        incoming().authorEmail == existing().authorEmail &&
+        incoming().createdAt == existing().createdAt &&
+        (incoming().diff(existing()).affectedKeys().hasOnly(['title', 'url', 'period']));
+
+      allow delete: if isAdmin() && isValidId(reportId);
+    }
+
+    function isValidDonationSettings(data) {
+      return data.keys().hasAll(['pixKey', 'paypalLink', 'updatedAt']) &&
+        data.keys().size() == 3 &&
+        data.pixKey is string && data.pixKey.size() <= 100 &&
+        data.paypalLink is string && data.paypalLink.size() <= 1000 &&
+        data.updatedAt is timestamp;
+    }
+
+    match /settings/{settingId} {
+      allow get: if true;
+      allow list: if false; // Clients should fetch settings directly by id
+      
+      allow create: if isAdmin() && isValidId(settingId) &&
+        isValidDonationSettings(incoming()) &&
+        incoming().updatedAt == request.time;
+        
+      allow update: if isAdmin() && isValidId(settingId) &&
+        isValidDonationSettings(incoming()) &&
+        incoming().updatedAt == request.time &&
+        (incoming().diff(existing()).affectedKeys().hasOnly(['pixKey', 'paypalLink', 'updatedAt']));
+
+      allow delete: if false; // Settings should not be deleted, only updated
+    }
   }
 }

@@ -5,12 +5,16 @@ export default function Home() {
   return (
     <div>
       {/* HERO SECTION */}
-      <section className="flex-1 flex py-20 bg-gradient-to-br from-[#0056a3] via-[#004a8d] to-[#8fd3c1] relative overflow-hidden">
-        {/* Abstract Pattern Overlay */}
-        <div className="absolute inset-0 opacity-10">
-          <svg width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none">
-            <path d="M0 100 L100 0 L100 100 Z" fill="white" />
-          </svg>
+      <section className="flex-1 flex py-20 relative overflow-hidden min-h-[600px] items-center">
+        {/* Background Image */}
+        <div className="absolute inset-0 z-0 bg-[#0056a3]">
+          <img 
+            src="https://images.unsplash.com/photo-1544568100-847a948585b9?q=80&w=2574&auto=format&fit=crop" 
+            alt="Dog looking hopefully" 
+            className="w-full h-full object-cover object-center mix-blend-overlay opacity-60"
+          />
+          {/* Gradient Overlay for contrast */}
+          <div className="absolute inset-0 bg-gradient-to-br from-[#0056a3]/90 via-[#004a8d]/80 to-[#8fd3c1]/70 mix-blend-multiply"></div>
         </div>
 
         <div className="relative z-10 w-full max-w-7xl mx-auto flex flex-col lg:flex-row items-center px-4 sm:px-6 lg:px-12 gap-12">
