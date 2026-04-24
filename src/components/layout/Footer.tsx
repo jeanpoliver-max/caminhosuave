@@ -33,7 +33,7 @@ export default function Footer() {
           <div>
             <h3 className="font-display font-bold text-white mb-4 uppercase text-sm tracking-wider">Redes Sociais</h3>
             <div className="flex space-x-4">
-              <a href="#" className="hover:text-[#8fd3c1] transition-colors"><Instagram className="h-5 w-5" /></a>
+              <a href="https://www.instagram.com/stories/assoccaminhosuave/" target="_blank" rel="noopener noreferrer" className="hover:text-[#8fd3c1] transition-colors"><Instagram className="h-5 w-5" /></a>
               <a href="#" className="hover:text-[#8fd3c1] transition-colors"><FacebookIcon className="h-5 w-5" /></a>
               <a href="#" className="hover:text-[#8fd3c1] transition-colors"><MessageCircle className="h-5 w-5" /></a>
               <a href="#" className="hover:text-[#8fd3c1] transition-colors"><Youtube className="h-5 w-5" /></a>

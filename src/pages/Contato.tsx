@@ -90,7 +90,7 @@ export default function Contato() {
               <div className="mt-10 pt-8 border-t border-white/20">
                 <strong className="block text-sm text-secondary uppercase tracking-wider mb-4">Siga-nos nas Redes Sociais</strong>
                 <div className="flex gap-4">
-                  <a href="#" className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-secondary hover:text-primary transition-all"><Instagram className="w-5 h-5" /></a>
+                  <a href="https://www.instagram.com/stories/assoccaminhosuave/" target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-secondary hover:text-primary transition-all"><Instagram className="w-5 h-5" /></a>
                   <a href="#" className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-secondary hover:text-primary transition-all"><Facebook className="w-5 h-5" /></a>
                   <a href="#" className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-secondary hover:text-primary transition-all"><MessageCircle className="w-5 h-5" /></a>
                   <a href="#" className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-secondary hover:text-primary transition-all"><Youtube className="w-5 h-5" /></a>
