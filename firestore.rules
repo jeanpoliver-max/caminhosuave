@@ -19,7 +19,7 @@ service cloud.firestore {
     }
     
     match /admins/{adminEmail} {
-      allow read: if isAdmin() && isValidEmailId(adminEmail);
+      allow get: if isSignedIn() && (request.auth.token.email == adminEmail || isAdmin()) && isValidEmailId(adminEmail);
       allow list: if isAdmin();
       allow create: if isAdmin() && isValidEmailId(adminEmail) && 
         incoming().keys().hasAll(['email', 'role', 'createdAt']) &&

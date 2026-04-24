@@ -3,13 +3,12 @@ import { Heart } from 'lucide-react';
 
 export default function Navbar() {
   return (
-    <header className="h-[70px] bg-white border-b border-gray-100 flex items-center justify-between px-10 shrink-0 sticky top-0 z-50">
+    <header className="h-[80px] bg-white border-b border-gray-100 flex items-center justify-between px-10 shrink-0 sticky top-0 z-50">
       <div className="flex items-center gap-2">
         <Link to="/" className="flex items-center gap-2">
-          <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
-            <Heart className="h-6 w-6 text-white" />
+          <div className="w-56 h-16 flex items-center justify-start overflow-hidden shrink-0">
+            <img src="https://i.imgur.com/QfHlUOg.png" alt="Caminho Suave Logo" className="w-full h-full object-contain object-left scale-150 origin-left" />
           </div>
-          <span className="font-bold text-xl tracking-tight text-primary">Caminho <span className="text-secondary">Suave</span></span>
         </Link>
       </div>
       
