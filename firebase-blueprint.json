@@ -1,0 +1,33 @@
+{
+  "entities": {
+    "Admin": {
+      "title": "Admin",
+      "description": "Administrative users who have access to the dashboard.",
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string",
+          "description": "The admin's email address"
+        },
+        "role": {
+          "type": "string",
+          "enum": ["owner", "editor", "volunteer"],
+          "description": "The admin's role"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp of creation"
+        }
+      },
+      "required": ["email", "role", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/admins/{adminEmail}": {
+      "schema": {
+        "$ref": "#/entities/Admin"
+      },
+      "description": "Contains documents for authorized administrators. The document ID must match the user's email address to allow for pre-registration."
+    }
+  }
+}
