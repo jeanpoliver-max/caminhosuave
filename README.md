@@ -1,20 +1,25 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# Caminho Suave - Associação Protetora de Animais
 
-# Run and deploy your AI Studio app
+Este é o repositório do aplicativo web da Associação Caminho Suave.
 
-This contains everything you need to run your app locally.
+## Como rodar localmente (Desenvolvimento)
 
-View your app in AI Studio: https://ai.studio/apps/7ebf06a4-20f5-451b-b8e3-a625867db845
+1. Instale as dependências:
+   ```bash
+   npm install
+   ```
 
-## Run Locally
+2. Inicie o servidor:
+   ```bash
+   npm run dev
+   ```
 
-**Prerequisites:**  Node.js
+## Deploy para o GitHub Pages
 
+**Nota importante:** A integração direta do AI Studio não possui permissões para criar pastas `.github/workflows` diretamente por questões de segurança do GitHub. 
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+Para fazer o deploy via GitHub Actions:
+1. Vá até o seu repositório no GitHub.
+2. Clique na aba **"Settings"** e depois em **"Pages"**.
+3. Em "Source", selecione **GitHub Actions**.
+4. Clique em "create your own" ou "Static HTML", e copie o script de deploy do Vite. Ou simplesmente vá na aba "Actions" e crie um novo workflow colando o código de deploy.
