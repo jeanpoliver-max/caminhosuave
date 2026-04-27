@@ -17,9 +17,9 @@ export default function AdminLogin() {
     e.preventDefault();
     try {
       await signInWithGoogle();
-    } catch (error) {
-      console.error(error);
-      alert('Erro ao fazer login.');
+    } catch (error: any) {
+      console.error('Firebase login error:', error);
+      alert(`Erro ao fazer login: ${error.message}\nSe você estiver vendo essa página no Preview do painel, experimente usar o link no canto superior direito para abrir em uma nova janela (Open in new tab).`);
     }
   };
 
