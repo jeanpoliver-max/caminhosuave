@@ -63,7 +63,7 @@ export default function AdminLogin() {
       <div className="max-w-md w-full space-y-8 bg-white p-10 rounded-3xl shadow-xl relative z-10 border border-gray-100">
         <div>
           <div className="mx-auto flex items-center justify-center">
-            <img src="https://i.imgur.com/3eFUOYP.png" alt="Logotipo Caminho Suave" className="h-24 w-auto object-contain" />
+            <img src="https://i.imgur.com/YHSzH1b.png" alt="Logotipo Caminho Suave" className="h-24 w-auto object-contain" />
           </div>
           <h2 className="mt-6 text-center text-3xl font-display font-extrabold text-primary">
             Acesso Restrito
