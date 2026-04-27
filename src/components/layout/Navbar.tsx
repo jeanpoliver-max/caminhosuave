@@ -9,6 +9,7 @@ export default function Navbar() {
 
   return (
     <header className="h-[80px] bg-white border-b border-gray-100 flex items-center justify-between px-4 md:px-10 shrink-0 sticky top-0 z-50">
+      {/* Mobile menu toggle e logo */}
       <div className="flex items-center gap-2">
         <Link to="/" className="flex items-center gap-2" onClick={closeMenu}>
           <div className="w-48 md:w-56 h-16 flex items-center justify-start overflow-hidden shrink-0">
