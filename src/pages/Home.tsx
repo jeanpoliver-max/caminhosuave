@@ -19,7 +19,7 @@ export default function Home() {
 
         <div className="relative z-10 w-full max-w-7xl mx-auto flex flex-col lg:flex-row items-center px-4 sm:px-6 lg:px-12 gap-12">
           <div className="w-full lg:w-3/5 text-white lg:pr-10">
-            <span className="inline-block px-3 py-1 bg-white/20 rounded-md text-xs font-bold uppercase tracking-widest mb-4">Certificação OSCIP nº 27.342.722/0001-80</span>
+            <span className="inline-block px-3 py-1 bg-white/20 rounded-md text-xs font-bold uppercase tracking-widest mb-4">Certificação OSC nº 27.342.722/0001-80</span>
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold leading-[1.1] mb-6">
               Cada Doação <br/><span className="text-[#8fd3c1]">Salva Uma Vida</span>
             </h1>
