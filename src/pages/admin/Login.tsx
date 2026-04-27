@@ -1,15 +1,17 @@
 import { Lock, Mail, KeyRound } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 export default function AdminLogin() {
-  const { signInWithGoogle, signInWithEmailAndPassword, user, isAdmin, loading } = useAuth();
+  const { signInWithGoogle, signInWithEmailAndPassword, resetPassword, user, isAdmin, loading } = useAuth();
   const navigate = useNavigate();
   
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [localError, setLocalError] = useState('');
+  const [resetMessage, setResetMessage] = useState('');
+  const [isResettingPassword, setIsResettingPassword] = useState(false);
 
   useEffect(() => {
     if (user && isAdmin) {
@@ -50,6 +52,30 @@ export default function AdminLogin() {
     }
   };
 
+  const handlePasswordReset = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLocalError('');
+    setResetMessage('');
+    
+    if (!email) {
+      setLocalError('Por favor, informe seu e-mail para recuperar a senha.');
+      return;
+    }
+
+    try {
+      await resetPassword(email);
+      setResetMessage('Um e-mail de redefinição de senha foi enviado para você.');
+      // Opcional: Voltar para a tela de login após alguns segundos, ou manter a mensagem.
+    } catch (error: any) {
+      console.error('Firebase password reset error:', error);
+      let errorMsg = 'Erro ao enviar e-mail de redefinição. Verifique o e-mail informado.';
+      if (error.code === 'auth/user-not-found') {
+         errorMsg = 'Nenhum usuário encontrado com este e-mail.';
+      }
+      setLocalError(errorMsg);
+    }
+  };
+
   if (loading) {
     return <div className="min-h-screen bg-gray-soft flex items-center justify-center">Carregando...</div>;
   }
@@ -63,7 +89,7 @@ export default function AdminLogin() {
       <div className="max-w-md w-full space-y-8 bg-white p-10 rounded-3xl shadow-xl relative z-10 border border-gray-100">
         <div>
           <div className="mx-auto flex items-center justify-center">
-            <img src="https://i.imgur.com/YHSzH1b.png" alt="Logotipo Caminho Suave" className="h-24 w-auto object-contain" />
+            <img src="https://i.imgur.com/rrnArMo.png" alt="Logotipo Caminho Suave" className="h-24 w-auto object-contain" />
           </div>
           <h2 className="mt-6 text-center text-3xl font-display font-extrabold text-primary">
             Acesso Restrito
@@ -85,49 +111,109 @@ export default function AdminLogin() {
               {localError}
             </div>
           )}
-          
-          <form onSubmit={handleEmailLogin} className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-neutral-dark mb-1">E-mail</label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Mail className="h-5 w-5 text-gray-400" />
-                </div>
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-xl focus:ring-primary focus:border-primary sm:text-sm"
-                  placeholder="usuario@dominio.com"
-                  required
-                />
-              </div>
-            </div>
-            
-            <div>
-              <label className="block text-sm font-medium text-neutral-dark mb-1">Senha</label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <KeyRound className="h-5 w-5 text-gray-400" />
-                </div>
-                <input
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-xl focus:ring-primary focus:border-primary sm:text-sm"
-                  placeholder="********"
-                  required
-                />
-              </div>
-            </div>
 
-            <button 
-              type="submit"
-              className="w-full flex justify-center py-3 px-4 border border-transparent text-sm font-bold rounded-xl text-white bg-primary hover:bg-opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
-            >
-              Entrar com E-mail
-            </button>
-          </form>
+          {resetMessage && (
+            <div className="p-4 bg-green-50 border border-green-200 text-green-700 rounded-xl text-center text-sm mb-4">
+              {resetMessage}
+            </div>
+          )}
+          
+          {!isResettingPassword ? (
+            <form onSubmit={handleEmailLogin} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-neutral-dark mb-1">E-mail</label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <Mail className="h-5 w-5 text-gray-400" />
+                  </div>
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-xl focus:ring-primary focus:border-primary sm:text-sm"
+                    placeholder="usuario@dominio.com"
+                    required
+                  />
+                </div>
+              </div>
+              
+              <div>
+                <div className="flex justify-between items-center mb-1">
+                  <label className="block text-sm font-medium text-neutral-dark">Senha</label>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsResettingPassword(true);
+                      setLocalError('');
+                      setResetMessage('');
+                    }}
+                    className="text-sm text-primary hover:text-primary-dark font-medium transition-colors"
+                  >
+                    Esqueceu a senha?
+                  </button>
+                </div>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <KeyRound className="h-5 w-5 text-gray-400" />
+                  </div>
+                  <input
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-xl focus:ring-primary focus:border-primary sm:text-sm"
+                    placeholder="********"
+                    required
+                  />
+                </div>
+              </div>
+
+              <button 
+                type="submit"
+                className="w-full flex justify-center py-3 px-4 border border-transparent text-sm font-bold rounded-xl text-white bg-primary hover:bg-opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
+              >
+                Entrar com E-mail
+              </button>
+            </form>
+          ) : (
+            <form onSubmit={handlePasswordReset} className="space-y-4">
+              <p className="text-sm text-gray-600 mb-4">
+                Informe seu e-mail abaixo e enviaremos um link para você redefinir sua senha.
+              </p>
+              <div>
+                <label className="block text-sm font-medium text-neutral-dark mb-1">E-mail</label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <Mail className="h-5 w-5 text-gray-400" />
+                  </div>
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-xl focus:ring-primary focus:border-primary sm:text-sm"
+                    placeholder="usuario@dominio.com"
+                    required
+                  />
+                </div>
+              </div>
+              <button 
+                type="submit"
+                className="w-full flex justify-center py-3 px-4 border border-transparent text-sm font-bold rounded-xl text-white bg-primary hover:bg-opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all shadow-md hover:shadow-lg transform hover:-translate-y-0.5 mb-2"
+              >
+                Enviar link de recuperação
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setIsResettingPassword(false);
+                  setLocalError('');
+                  setResetMessage('');
+                }}
+                className="w-full flex justify-center py-3 px-4 border border-gray-300 text-sm font-bold rounded-xl text-neutral-dark bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all shadow-sm hover:shadow transform hover:-translate-y-0.5"
+              >
+                Voltar para o login
+              </button>
+            </form>
+          )}
 
           <div className="relative">
             <div className="absolute inset-0 flex items-center">

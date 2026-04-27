@@ -13,7 +13,7 @@ export default function Navbar() {
       <div className="flex items-center gap-2">
         <Link to="/" className="flex items-center gap-2" onClick={closeMenu}>
           <div className="w-48 md:w-56 h-16 flex items-center justify-start overflow-hidden shrink-0">
-            <img src="https://i.imgur.com/YHSzH1b.png" alt="Caminho Suave Logo" className="w-full h-full object-contain object-left scale-[1.35] origin-left" />
+            <img src="https://i.imgur.com/rrnArMo.png" alt="Caminho Suave Logo" className="w-full h-full object-contain object-left scale-[1.35] origin-left" />
           </div>
         </Link>
       </div>
