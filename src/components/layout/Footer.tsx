@@ -42,7 +42,7 @@ export default function Footer() {
           <div>
             <h3 className="font-display font-bold text-white mb-4 uppercase text-sm tracking-wider">Institucional</h3>
             <ul className="space-y-3 text-sm">
-              <li><Link to="/transparencia" className="hover:text-white transition-colors">Estatuto OSCIP</Link></li>
+              <li><Link to="/transparencia" className="hover:text-white transition-colors">Estatuto da OSC</Link></li>
               <li><Link to="/transparencia" className="hover:text-white transition-colors">Política de Privacidade</Link></li>
               <li><Link to="/admin" className="hover:text-[#8fd3c1] transition-colors">Área Restrita</Link></li>
             </ul>
